@@ -6,7 +6,7 @@ The last item must end with ,]].
 '''
 
 # List of protonvpn servers
-# Will not breaking into categories maybe with a 3rd column with login level 1-3 
+# Will not breaking into categories maybe with a 3rd column with login level 1-3
 serverList = [
 ["ES#1", "ES#1"],
 ["ES#2", "ES#2"],
@@ -23,4 +23,5 @@ serverList = [
 ["US-VA#1", "US-VA#1"],
 ["US-VA#2", "US-VA#2"],
 ["US-VA#3", "US-VA#3"],
-["US-VA#4", "US-VA#4",]]
+["US-VA#4", "US-VA#4"],
+["SE#7", "SE#8",]]
