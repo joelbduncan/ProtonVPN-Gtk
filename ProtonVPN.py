@@ -77,7 +77,7 @@ class Handler():
 
 	# Connect to selected server
 	def connectBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "-connect", str(self.browseServer.get_active_id())])
+		subprocess.Popen(["protonvpn-cli", "--connect", str(self.browseServer.get_active_id())])
 		parser = SafeConfigParser()
 		parser.read('config.ini')
 		parser.read('config.ini')
@@ -88,14 +88,14 @@ class Handler():
 
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "-disconnect"])
+		subprocess.Popen(["protonvpn-cli", "--disconnect"])
 		#subprocess.Popen.kill()
 
 	def fastestServerBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "-fastest-connect"])
+		subprocess.Popen(["protonvpn-cli", "--fastest-connect"])
 
 	def randomServerBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "-random-connect"])
+		subprocess.Popen(["protonvpn-cli", "--random-connect"])
 
 # Connect glade GUI
 builder = Gtk.Builder()
