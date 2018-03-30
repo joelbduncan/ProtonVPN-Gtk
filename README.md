@@ -1,6 +1,8 @@
 # ProtonVPN-Gtk
 GTK3 ProtonVPN Client using offical ProtonVPN-CLi
 
+![alt text](https://i.imgur.com/RgOZjwE.png "ProtonVPN-GTK Screenshot")
+
 # Dependencies
 - python
 - python-requests
