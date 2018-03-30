@@ -10,7 +10,6 @@ import requests
 import json
 from ConfigParser import SafeConfigParser
 from serverList import serverList
-import os
 
 # Temp import for testing
 import thread
@@ -71,7 +70,6 @@ class Handler():
 		except:
 			pass
 			GObject.idle_add(self.statusLabel.set_text, str("Disconnected"))
-			#self.connectionProgress.stop()
 
 	# Get current IP address/Location
 	def fetchIP(self):
@@ -93,8 +91,7 @@ class Handler():
 		parser.set('globalVars', 'lastConnection', self.browseServer.get_active_id())
 		parser.set('globalVars', 'protocol', self.protocolSelection.get_active_id())
 
-
-		with open('config.ini', 'w') as configfile:    # save
+		with open('config.ini', 'w') as configfile:
 		    parser.write(configfile)
 
 	# Disconnect from VPN
