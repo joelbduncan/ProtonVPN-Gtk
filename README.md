@@ -26,7 +26,7 @@ More detailed instructions
 
 # Current Issues
 - No installable package would like to use Flatpak
-- TCP/UDP Selection missing
+- ~~TCP/UDP Selection missing~~
 - Server List incomplete
 - Server list not filtered for free/paid users
 
