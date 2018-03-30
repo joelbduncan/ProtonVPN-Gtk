@@ -100,9 +100,11 @@ class Handler():
 		print 'Done...'
 
 	def fastestServerBtn(self, button):
+		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-f"])
 
 	def randomServerBtn(self, button):
+		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
 
 # Connect glade GUI
