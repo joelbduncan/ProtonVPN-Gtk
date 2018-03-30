@@ -22,8 +22,6 @@ class Handler():
 
 	def __init__(self):
 		# Connect GUI components
-		self.usernameInput = builder.get_object('usernameInput')
-		self.passwordInput = builder.get_object('passwordInput')
 		self.browseServer = builder.get_object('browseServer')
 		self.protocolSelection = builder.get_object('protocolSelection')
 		self.statusLabel = builder.get_object('statusLabel')
