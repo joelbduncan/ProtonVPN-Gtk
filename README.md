@@ -1,6 +1,8 @@
 # ProtonVPN-Gtk
 GTK3 ProtonVPN Client using offical ProtonVPN-CLi
 
+**Please remember this is a work in progress in very early stages of development.**
+
 ![alt text](https://i.imgur.com/RgOZjwE.png "ProtonVPN-GTK Screenshot")
 
 # Dependencies
