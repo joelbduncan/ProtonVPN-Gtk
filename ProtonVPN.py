@@ -30,7 +30,7 @@ class Handler():
 		self.connectionProgress = builder.get_object('connectionProgress')
 
 		# Populate Server list
-		for index in range(len(serverList)):
+		for index in range(len(serverList)-1, 0, -1):
 			self.browseServer.insert(0, serverList[index][0], serverList[index][1])
 
 		self.protocolSelection.insert(0, "tcp", "TCP")
@@ -76,7 +76,7 @@ class Handler():
 		j = json.loads(r.text)
 		countryName = j['country_name']
 		ipAddress = j['ip']
-		
+
 		self.locationLabel.set_text(countryName)
 		self.ipAddressLabel.set_text(ipAddress)
 
