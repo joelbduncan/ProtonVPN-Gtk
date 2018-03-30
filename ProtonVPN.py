@@ -85,7 +85,6 @@ class Handler():
 		subprocess.Popen(["protonvpn-cli", "--connect", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
 		parser = SafeConfigParser()
 		parser.read('config.ini')
-		parser.read('config.ini')
 		parser.set('globalVars', 'lastConnection', self.browseServer.get_active_id())
 		parser.set('globalVars', 'protocol', self.protocolSelection.get_active_id())
 
