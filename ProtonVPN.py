@@ -25,6 +25,7 @@ class Handler():
 		self.usernameInput = builder.get_object('usernameInput')
 		self.passwordInput = builder.get_object('passwordInput')
 		self.browseServer = builder.get_object('browseServer')
+		self.protocolSelection = builder.get_object('protocolSelection')
 		self.statusLabel = builder.get_object('statusLabel')
 		self.locationLabel = builder.get_object('locationLabel')
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
@@ -33,6 +34,9 @@ class Handler():
 		for index in range(len(serverList)):
 			self.browseServer.insert(0, serverList[index][0], serverList[index][1])
 
+		self.protocolSelection.insert(0, "tcp", "TCP")
+		self.protocolSelection.insert(0, "udp", "UDP")
+
 		# On Startup
 		# Read Config file
 		parser = SafeConfigParser()
@@ -40,6 +44,7 @@ class Handler():
 
 		# Set last connected server as default
 		self.browseServer.set_active_id(parser.get('globalVars', 'lastConnection'))
+		self.protocolSelection.set_active_id(parser.get('globalVars', 'protocol'))
 
 		# Start threading timeout for connectionStatus()
 		GObject.timeout_add_seconds(1, self.statusThread)
@@ -77,11 +82,12 @@ class Handler():
 
 	# Connect to selected server
 	def connectBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "--connect", str(self.browseServer.get_active_id())])
+		subprocess.Popen(["protonvpn-cli", "--connect", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
 		parser = SafeConfigParser()
 		parser.read('config.ini')
 		parser.read('config.ini')
 		parser.set('globalVars', 'lastConnection', self.browseServer.get_active_id())
+		parser.set('globalVars', 'protocol', self.protocolSelection.get_active_id())
 
 		with open('config.ini', 'w') as configfile:    # save
 		    parser.write(configfile)
@@ -89,6 +95,7 @@ class Handler():
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
 		subprocess.Popen(["protonvpn-cli", "--disconnect"])
+		print 'Done...'
 		#subprocess.Popen.kill()
 
 	def fastestServerBtn(self, button):
