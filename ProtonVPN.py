@@ -98,10 +98,10 @@ class Handler():
 		#subprocess.Popen.kill()
 
 	def fastestServerBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "--fastest-connect"])
+		subprocess.Popen(["protonvpn-cli", "-fastest-connect"])
 
 	def randomServerBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "--random-connect"])
+		subprocess.Popen(["protonvpn-cli", "-random-connect"])
 
 # Connect glade GUI
 builder = Gtk.Builder()
