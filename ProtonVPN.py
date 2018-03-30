@@ -10,6 +10,7 @@ import requests
 import json
 from ConfigParser import SafeConfigParser
 from serverList import serverList
+import os
 
 # Temp import for testing
 import thread
@@ -29,6 +30,7 @@ class Handler():
 		self.statusLabel = builder.get_object('statusLabel')
 		self.locationLabel = builder.get_object('locationLabel')
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
+		self.connectionProgress = builder.get_object('connectionProgress')
 
 		# Populate Server list
 		for index in range(len(serverList)):
@@ -65,9 +67,11 @@ class Handler():
 			host = socket.gethostbyname(remoteServer)
 			s = socket.create_connection((host, 53), 2)
 			GObject.idle_add(self.statusLabel.set_text, str("Connected"))
+			self.connectionProgress.stop()
 		except:
 			pass
 			GObject.idle_add(self.statusLabel.set_text, str("Disconnected"))
+			#self.connectionProgress.stop()
 
 	# Get current IP address/Location
 	def fetchIP(self):
@@ -82,11 +86,13 @@ class Handler():
 
 	# Connect to selected server
 	def connectBtn(self, button):
+		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "--connect", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
 		parser = SafeConfigParser()
 		parser.read('config.ini')
 		parser.set('globalVars', 'lastConnection', self.browseServer.get_active_id())
 		parser.set('globalVars', 'protocol', self.protocolSelection.get_active_id())
+
 
 		with open('config.ini', 'w') as configfile:    # save
 		    parser.write(configfile)
@@ -95,7 +101,6 @@ class Handler():
 	def disconnectBtn(self, button):
 		subprocess.Popen(["protonvpn-cli", "--disconnect"])
 		print 'Done...'
-		#subprocess.Popen.kill()
 
 	def fastestServerBtn(self, button):
 		subprocess.Popen(["protonvpn-cli", "--fastest-connect"])
