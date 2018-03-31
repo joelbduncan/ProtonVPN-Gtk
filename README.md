@@ -1,6 +1,14 @@
 # ProtonVPN-Gtk
 GTK3 ProtonVPN Client using offical ProtonVPN-CLi
 
+# Features
+- Connect to Server
+- Connect to Fastest Server
+- Connect to Random Server
+- Update protonvpn-cli
+- Live status of IP Address, Location & Connection Status
+- Servers listed based on ProtonVPN tier unavailable servers won't be listed
+
 **Please remember this is a work in progress in very early stages of development.**
 
 ![alt text](https://i.imgur.com/RgOZjwE.png "ProtonVPN-GTK Screenshot")
@@ -32,7 +40,7 @@ More detailed instructions
 - No installable package would like to use Flatpak
 - ~~TCP/UDP Selection missing~~
 - ~~Server List incomplete~~
-- Server list not filtered for free/paid users
+- ~~Server list not filtered for free/paid users~~
 
 # Report Bugs
 I'm sure there's plenty of bugs please feel free to report them here.
