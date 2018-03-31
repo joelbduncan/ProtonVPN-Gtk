@@ -2,6 +2,48 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkMenu" id="menu1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+  </object>
+  <object class="GtkPopoverMenu" id="popovermenu1">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
+        <property name="row_spacing">5</property>
+        <property name="column_spacing">5</property>
+        <child>
+          <object class="GtkButton">
+            <property name="label" translatable="yes">Update CLI</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <signal name="clicked" handler="updateBtn" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+      <packing>
+        <property name="submenu">main</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </object>
   <object class="GtkWindow" id="ui">
     <property name="can_focus">False</property>
     <child>
@@ -244,6 +286,8 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="valign">start</property>
             <property name="row_spacing">5</property>
             <property name="column_spacing">10</property>
             <child>
@@ -273,29 +317,35 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton">
-                <property name="label" translatable="yes">Update</property>
+              <object class="GtkSpinner" id="connectionProgress">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <signal name="clicked" handler="updateBtn" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
               </object>
               <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">0</property>
               </packing>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkMenuButton">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="draw_indicator">True</property>
+            <property name="direction">none</property>
+            <property name="popover">popovermenu1</property>
             <child>
-              <object class="GtkSpinner" id="connectionProgress">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="left_attach">3</property>
-                <property name="top_attach">0</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
+          <packing>
+            <property name="pack_type">end</property>
+            <property name="position">1</property>
+          </packing>
         </child>
       </object>
     </child>
