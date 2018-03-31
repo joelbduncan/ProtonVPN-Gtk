@@ -97,6 +97,10 @@ class Handler():
 		subprocess.Popen(["protonvpn-cli", "-d"])
 		print 'Done...'
 
+	# Update protonvpn-cli
+	def updateBtn(self, button):
+		subprocess.Popen(["protonvpn-cli", "--update"])
+
 	def fastestServerBtn(self, button):
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-f"])
