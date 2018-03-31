@@ -11,12 +11,17 @@ import json
 from ConfigParser import SafeConfigParser
 from serverList import serverList
 import os
+import sys
 
 # Temp import for testing
 import thread
 
 # OpenVPN Gateway IP Address for connection status
 remoteServer = "10.8.8.1"
+
+# Checks for root execution
+if not os.geteuid() == 0:
+    sys.exit("Root access is required to use ProtonVPN-Gtk...")
 
 # Setup GUI Handlers
 class Handler():
