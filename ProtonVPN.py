@@ -95,7 +95,7 @@ class Handler():
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
 		subprocess.Popen(["protonvpn-cli", "-d"])
-		print 'Done...'
+		print('Done...')
 
 	# Update protonvpn-cli
 	def updateBtn(self, button):
