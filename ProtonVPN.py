@@ -47,7 +47,7 @@ class Handler():
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
 			# Plus & Visionary users protonTier = 3
-			if "2" in protonVPNTier or "2" in protonVPNTier:
+			if "2" in protonVPNTier or "3" in protonVPNTier:
 				if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
