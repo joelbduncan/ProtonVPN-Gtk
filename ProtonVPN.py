@@ -11,12 +11,17 @@ import json
 from ConfigParser import SafeConfigParser
 from serverList import serverList
 import os
+import sys
 
 # Temp import for testing
 import thread
 
 # OpenVPN Gateway IP Address for connection status
 remoteServer = "10.8.8.1"
+
+# Checks for root execution
+if not os.geteuid() == 0:
+    sys.exit("Root access is required to use ProtonVPN-Gtk...")
 
 # Setup GUI Handlers
 class Handler():
@@ -37,17 +42,17 @@ class Handler():
 		# Populate Server list
 		for index in range(len(serverList)-1, 0, -1):
 			# Free users protonTier = 1
-			if "1" in protonVPNTier:
+			if "0" in protonVPNTier:
 				if serverList[index][0] == "1":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
 			# Basic users protonTier = 2
-			if "2" in protonVPNTier:
+			if "1" in protonVPNTier:
 				if serverList[index][0] == "1" or serverList[index][0] == "2":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
 			# Plus & Visionary users protonTier = 3
-			if "3" in protonVPNTier or "4" in protonVPNTier:
+			if "2" in protonVPNTier or "3" in protonVPNTier:
 				if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
