@@ -51,11 +51,10 @@ class Handler():
 				if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
-
+		# Populate potocol selection
 		self.protocolSelection.insert(0, "tcp", "TCP")
 		self.protocolSelection.insert(0, "udp", "UDP")
 
-		# On Startup
 		# Read Config file
 		parser = SafeConfigParser()
 		parser.read('config.ini')
@@ -108,6 +107,7 @@ class Handler():
 		parser.set('globalVars', 'lastConnection', self.browseServer.get_active_id())
 		parser.set('globalVars', 'protocol', self.protocolSelection.get_active_id())
 
+		# Read config file
 		with open('config.ini', 'w') as configfile:
 		    parser.write(configfile)
 
@@ -120,10 +120,12 @@ class Handler():
 	def updateBtn(self, button):
 		subprocess.Popen(["protonvpn-cli", "--update"])
 
+	# Connect to fastest server
 	def fastestServerBtn(self, button):
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-f"])
 
+	# Connect to random server
 	def randomServerBtn(self, button):
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
