@@ -44,7 +44,7 @@ except ImportError:
     missingDependencies = True
     modulesRequired += "python-requests needs to be installed.\n"
 
-# Checks for the python-json module	
+# Checks for the python-json module
 try:
     import json
 except ImportError:
@@ -57,8 +57,6 @@ if(missingDependencies):
 
 # Setup GUI Handlers
 class Handler():
-
-
 
 	def __init__(self):
 		# Connect GUI components
@@ -147,6 +145,7 @@ class Handler():
 
 	# Connect to selected server
 	def connectBtn(self, button):
+                self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
 		parser = SafeConfigParser()
@@ -169,13 +168,19 @@ class Handler():
 
 	# Connect to fastest server
 	def fastestServerBtn(self, button):
+                self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-f"])
 
 	# Connect to random server
 	def randomServerBtn(self, button):
+                self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
+
+	def reconnect(self):
+            if(self.statusLabel.get_text() == "Connected"):
+                    subprocess.check_call(["protonvpn-cli", "-d"])
 
 	# Kill thread on Gtk destory
 	def killThread(self):
