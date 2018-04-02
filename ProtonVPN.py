@@ -18,33 +18,40 @@ remoteServer = "10.8.8.1"
 if not os.geteuid() == 0:
     sys.exit("Root access is required to use ProtonVPN-Gtk...")
 
+
+
 missingDependencies = False
 modulesRequired = ""
 
+# Checks that protonvpn-cli is installed
 try:
     subprocess.check_output(['which', 'protonvpn-cli'])
 except subprocess.CalledProcessError, e:
     modulesRequired += "protonvpn-cli needs to be installed.\n"
     missingDependencies = True
 
+# Checks for the python-schedule module
 try:
     import schedule
 except ImportError:
     missingDependencies = True
     modulesRequired += "python-schedule needs to be installed.\n"
 
+# Checks for the python-requests module
 try:
     import requests
 except ImportError:
     missingDependencies = True
     modulesRequired += "python-requests needs to be installed.\n"
 
+# Checks for the python-json module	
 try:
     import json
 except ImportError:
     missingDependencies = True
     modulesRequired += "python-json needs to be installed.\n"
 
+# Exits ProtonVPN.py execution with missing dependencies
 if(missingDependencies):
     sys.exit(modulesRequired)
 
