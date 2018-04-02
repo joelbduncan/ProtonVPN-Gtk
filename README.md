@@ -17,6 +17,7 @@ GTK3 ProtonVPN Client using offical ProtonVPN-CLi
 - python
 - python-requests
 - python-json
+- python-schedule
 - GNOME 3.20
 - protonvpn-cli
 
