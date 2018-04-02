@@ -1,7 +1,6 @@
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import GObject
-from gi.repository import Gtk
+from gi.repository import GObject, Gtk
 import subprocess
 from threading import Thread
 import socket
@@ -11,17 +10,10 @@ import json
 from ConfigParser import SafeConfigParser
 from serverList import serverList
 import os
-import sys
-
-# Temp import for testing
-import thread
+import schedule
 
 # OpenVPN Gateway IP Address for connection status
 remoteServer = "10.8.8.1"
-
-# Checks for root execution
-if not os.geteuid() == 0:
-    sys.exit("Root access is required to use ProtonVPN-Gtk...")
 
 # Setup GUI Handlers
 class Handler():
@@ -42,17 +34,17 @@ class Handler():
 		# Populate Server list
 		for index in range(len(serverList)-1, 0, -1):
 			# Free users protonTier = 1
-			if "0" in protonVPNTier:
+			if "1" in protonVPNTier:
 				if serverList[index][0] == "1":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
 			# Basic users protonTier = 2
-			if "1" in protonVPNTier:
+			if "2" in protonVPNTier:
 				if serverList[index][0] == "1" or serverList[index][0] == "2":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
 			# Plus & Visionary users protonTier = 3
-			if "2" in protonVPNTier or "3" in protonVPNTier:
+			if "3" in protonVPNTier or "4" in protonVPNTier:
 				if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
 
@@ -68,17 +60,22 @@ class Handler():
 		self.browseServer.set_active_id(parser.get('globalVars', 'lastConnection'))
 		self.protocolSelection.set_active_id(parser.get('globalVars', 'protocol'))
 
-		# Start threading timeout for connectionStatus()
-		GObject.timeout_add_seconds(1, self.statusThread)
+		# Setup scheduler
+		schedule.every(0.03).minutes.do(self.connectionStatus)
 
-	def statusThread(self):
-		thread = Thread(target=self.connectionStatus)
-		thread.start()
-		return True
+		# Start thread for scheduler
+		self.thread = Thread(target=self.scheduleThread)
+		self.thread.daemon = True
+		self.thread.start()
+
+	# Run scheduler in thread
+	def scheduleThread(self):
+		while True:
+			schedule.run_pending()
+			time.sleep(1)
 
 	# Check VPN connection status & upadte location infomation
 	def connectionStatus(self):
-
 		try:
 			# Update IP Address/Location
 			self.fetchIP()
@@ -86,6 +83,8 @@ class Handler():
 			# Get VPN Connection status
 			host = socket.gethostbyname(remoteServer)
 			s = socket.create_connection((host, 53), 2)
+
+			# Update statusLabel on Gtk window
 			GObject.idle_add(self.statusLabel.set_text, str("Connected"))
 			self.connectionProgress.stop()
 		except:
@@ -100,8 +99,9 @@ class Handler():
 		countryName = j['country_name']
 		ipAddress = j['ip']
 
-		self.locationLabel.set_text(countryName)
-		self.ipAddressLabel.set_text(ipAddress)
+		# Update Location & IP Address labels on Gtk window
+		GObject.idle_add(self.locationLabel.set_text, str(countryName))
+		GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
 
 	# Connect to selected server
 	def connectBtn(self, button):
@@ -135,6 +135,15 @@ class Handler():
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
 
+	# Kill thread on Gtk destory
+	def killThread(self):
+		self.thread.join(0.1)
+
+# Runs when windows closed
+def destroy(destroy):
+	Handler().killThread()
+	Gtk.main_quit()
+
 # Connect glade GUI
 builder = Gtk.Builder()
 builder.add_from_file("proton-ui.glade")
@@ -143,6 +152,6 @@ builder.connect_signals(Handler())
 # Draw window
 window = builder.get_object("ui")
 window.show_all()
-window.connect("delete-event", Gtk.main_quit)
+window.connect("destroy", destroy)
 
 Gtk.main()
