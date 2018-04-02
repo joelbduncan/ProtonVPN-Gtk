@@ -177,7 +177,8 @@ class Handler():
                 self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
-
+		
+	# Allows connection to a server when a connection is already established
 	def reconnect(self):
             if(self.statusLabel.get_text() == "Connected"):
                     subprocess.check_call(["protonvpn-cli", "-d"])
