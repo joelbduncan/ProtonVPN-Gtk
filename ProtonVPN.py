@@ -164,7 +164,7 @@ class Handler():
 
 	# Connect to selected server
 	def connectBtn(self, button):
-                self.reconnect()
+		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
 		parser = SafeConfigParser()
@@ -174,7 +174,7 @@ class Handler():
 
 		# Read config file
 		with open('config.ini', 'w') as configfile:
-		    parser.write(configfile)
+			parser.write(configfile)
 
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
@@ -187,20 +187,20 @@ class Handler():
 
 	# Connect to fastest server
 	def fastestServerBtn(self, button):
-                self.reconnect()
+		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-f"])
 
 	# Connect to random server
 	def randomServerBtn(self, button):
-                self.reconnect()
+		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
 		
 	# Allows connection to a server when a connection is already established
 	def reconnect(self):
-            if(self.statusLabel.get_text() == "Connected"):
-                    subprocess.check_call(["protonvpn-cli", "-d"])
+		if(self.statusLabel.get_text() == "Connected"):
+			subprocess.check_call(["protonvpn-cli", "-d"])
 
 	# Kill thread on Gtk destory
 	def killThread(self):
