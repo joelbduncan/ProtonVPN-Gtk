@@ -283,7 +283,7 @@
                 <property name="hexpand">True</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <signal name="clicked" handler="standardRadioClicked" swapped="no"/>
+                <signal name="toggled" handler="standardRadioBtnToggle" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -302,6 +302,7 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">radioBtnStandard</property>
+                <signal name="toggled" handler="secureCoreRadioBtnToggle" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -320,6 +321,7 @@
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">radioBtnStandard</property>
+                <signal name="toggled" handler="torRadioBtnToggle" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -67,6 +67,12 @@ class Handler():
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
 		self.connectionProgress = builder.get_object('connectionProgress')
 
+		self.radioBtnStandard = builder.get_object('radioBtnStandard')
+		self.radioBtnSecureCore = builder.get_object('radioBtnSecureCore')
+		self.radioBtnTor = builder.get_object('radioBtnTor')
+
+		builder.connect_signals(self)
+
 		# Open/Read/Close ProtonVPN Tier config file
 		with open(os.environ['HOME'] + '/.protonvpn-cli/protonvpn_tier','r') as f:
 			protonVPNTier = f.read()
@@ -142,6 +148,19 @@ class Handler():
 		# Update Location & IP Address labels on Gtk window
 		GObject.idle_add(self.locationLabel.set_text, str(countryName))
 		GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
+
+	def standardRadioBtnToggle(self, widget):
+		if self.radioBtnStandard.get_active() == True:
+			print "Standard Active"
+			self.browseServer.remove_all()
+
+	def secureCoreRadioBtnToggle(self, widget):
+		if self.radioBtnSecureCore.get_active() == True:
+			print "Secure Core Active"
+
+	def torRadioBtnToggle(self, widget):
+		if self.radioBtnTor.get_active() == True:
+			print "Secure Tor Active"
 
 	# Connect to selected server
 	def connectBtn(self, button):
