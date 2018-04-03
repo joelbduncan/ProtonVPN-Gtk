@@ -171,6 +171,7 @@ class Handler():
 					if "2" in protonVPNTier or "3" in protonVPNTier:
 						if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+		self.browseServer.set_active(0)
 
 	def secureCoreRadioBtnToggle(self, widget):
 		global protonVPNTier
@@ -193,6 +194,7 @@ class Handler():
 					if "2" in protonVPNTier or "3" in protonVPNTier:
 						if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+			self.browseServer.set_active(0)
 
 	def torRadioBtnToggle(self, widget):
 		global protonVPNTier
@@ -215,6 +217,7 @@ class Handler():
 					if "2" in protonVPNTier or "3" in protonVPNTier:
 						if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
 							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+		self.browseServer.set_active(0)
 
 	# Connect to selected server
 	def connectBtn(self, button):
