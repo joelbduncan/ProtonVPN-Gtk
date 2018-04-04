@@ -10,13 +10,12 @@ from serverList import serverList
 import os
 import sys
 
-
 # OpenVPN Gateway IP Address for connection status
 remoteServer = "10.8.8.1"
 
 # Checks for root execution
 if not os.geteuid() == 0:
-    sys.exit("Root access is required to use ProtonVPN-Gtk...")
+	sys.exit("Root access is required to use ProtonVPN-Gtk...")
 
 
 
@@ -25,35 +24,35 @@ modulesRequired = ""
 
 # Checks that protonvpn-cli is installed
 try:
-    subprocess.check_output(['which', 'protonvpn-cli'])
+	subprocess.check_output(['which', 'protonvpn-cli'])
 except subprocess.CalledProcessError, e:
-    modulesRequired += "protonvpn-cli needs to be installed.\n"
-    missingDependencies = True
+	modulesRequired += "protonvpn-cli needs to be installed.\n"
+	missingDependencies = True
 
 # Checks for the python-schedule module
 try:
-    import schedule
+	import schedule
 except ImportError:
-    missingDependencies = True
-    modulesRequired += "python-schedule needs to be installed.\n"
+	missingDependencies = True
+	modulesRequired += "python-schedule needs to be installed.\n"
 
 # Checks for the python-requests module
 try:
-    import requests
+	import requests
 except ImportError:
-    missingDependencies = True
-    modulesRequired += "python-requests needs to be installed.\n"
+	missingDependencies = True
+	modulesRequired += "python-requests needs to be installed.\n"
 
 # Checks for the python-json module
 try:
-    import json
+	import json
 except ImportError:
-    missingDependencies = True
-    modulesRequired += "python-json needs to be installed.\n"
+	missingDependencies = True
+	modulesRequired += "python-json needs to be installed.\n"
 
 # Exits ProtonVPN.py execution with missing dependencies
 if(missingDependencies):
-    sys.exit(modulesRequired)
+	sys.exit(modulesRequired)
 
 # Setup GUI Handlers
 class Handler():
@@ -67,6 +66,14 @@ class Handler():
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
 		self.connectionProgress = builder.get_object('connectionProgress')
 
+		self.radioBtnStandard = builder.get_object('radioBtnStandard')
+		self.radioBtnSecureCore = builder.get_object('radioBtnSecureCore')
+		self.radioBtnTor = builder.get_object('radioBtnTor')
+
+		builder.connect_signals(self)
+
+		global protonVPNTier
+
 		# Open/Read/Close ProtonVPN Tier config file
 		with open(os.environ['HOME'] + '/.protonvpn-cli/protonvpn_tier','r') as f:
 			protonVPNTier = f.read()
@@ -76,17 +83,17 @@ class Handler():
 			# Free users protonTier = 1
 			if "0" in protonVPNTier:
 				if serverList[index][0] == "1":
-					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+					self.browseServer.insert(0, serverList[index][2], serverList[index][3])
 
 			# Basic users protonTier = 2
 			if "1" in protonVPNTier:
-				if serverList[index][0] == "1" or serverList[index][0] == "2":
-					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+				if serverList[index][1] == "1" or serverList[index][1] == "2":
+					self.browseServer.insert(0, serverList[index][2], serverList[index][3])
 
 			# Plus & Visionary users protonTier = 3
 			if "2" in protonVPNTier or "3" in protonVPNTier:
-				if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
-					self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+				if serverList[index][1] == "1" or serverList[index][1] == "2" or serverList[index][1] == "3":
+					self.browseServer.insert(0, serverList[index][2], serverList[index][3])
 
 		# Populate potocol selection
 		self.protocolSelection.insert(0, "tcp", "TCP")
@@ -143,9 +150,78 @@ class Handler():
 		GObject.idle_add(self.locationLabel.set_text, str(countryName))
 		GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
 
+	def standardRadioBtnToggle(self, widget):
+		global protonVPNTier
+		if self.radioBtnStandard.get_active() == True:
+			print "Standard Active"
+			self.browseServer.remove_all()
+			for index in range(len(serverList)-1, 0, -1):
+				if not ("TOR" in serverList[index][2] or "-" in serverList[index][2]):
+					# Free users protonTier = 1
+					if "0" in protonVPNTier:
+						if serverList[index][1] == "1":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+					# Basic users protonTier = 2
+					if "1" in protonVPNTier:
+						if serverList[index][1] == "1" or serverList[index][1] == "2":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+					# Plus & Visionary users protonTier = 3
+					if "2" in protonVPNTier or "3" in protonVPNTier:
+						if serverList[index][1] == "1" or serverList[index][1] == "2" or serverList[index][1] == "3":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+		self.browseServer.set_active(0)
+
+	def secureCoreRadioBtnToggle(self, widget):
+		global protonVPNTier
+		if self.radioBtnSecureCore.get_active() == True:
+			print "Secure Core"
+			self.browseServer.remove_all()
+			for index in range(len(serverList)-1, 0, -1):
+				if "-" in serverList[index][2]:
+					# Free users protonTier = 1
+					if "0" in protonVPNTier:
+						if serverList[index][1] == "1":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+					# Basic users protonTier = 2
+					if "1" in protonVPNTier:
+						if serverList[index][1] == "1" or serverList[index][1] == "2":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+					# Plus & Visionary users protonTier = 3
+					if "2" in protonVPNTier or "3" in protonVPNTier:
+						if serverList[index][1] == "1" or serverList[index][1] == "2" or serverList[index][1] == "3":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+			self.browseServer.set_active(0)
+
+	def torRadioBtnToggle(self, widget):
+		global protonVPNTier
+		if self.radioBtnTor.get_active() == True:
+			print "Tor Active"
+			self.browseServer.remove_all()
+			for index in range(len(serverList)-1, 0, -1):
+				if "TOR" in serverList[index][2]:
+					# Free users protonTier = 1
+					if "0" in protonVPNTier:
+						if serverList[index][1] == "1":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+					# Basic users protonTier = 2
+					if "1" in protonVPNTier:
+						if serverList[index][1] == "1" or serverList[index][1] == "2":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+					# Plus & Visionary users protonTier = 3
+					if "2" in protonVPNTier or "3" in protonVPNTier:
+						if serverList[index][1] == "1" or serverList[index][1] == "2" or serverList[index][1] == "3":
+							self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+		self.browseServer.set_active(0)
+
 	# Connect to selected server
 	def connectBtn(self, button):
-                self.reconnect()
+		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
 		parser = SafeConfigParser()
@@ -155,7 +231,7 @@ class Handler():
 
 		# Read config file
 		with open('config.ini', 'w') as configfile:
-		    parser.write(configfile)
+			parser.write(configfile)
 
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
@@ -168,20 +244,20 @@ class Handler():
 
 	# Connect to fastest server
 	def fastestServerBtn(self, button):
-                self.reconnect()
+		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-f"])
 
 	# Connect to random server
 	def randomServerBtn(self, button):
-                self.reconnect()
+		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-r"])
 		
 	# Allows connection to a server when a connection is already established
 	def reconnect(self):
-            if(self.statusLabel.get_text() == "Connected"):
-                    subprocess.check_call(["protonvpn-cli", "-d"])
+		if(self.statusLabel.get_text() == "Connected"):
+			subprocess.check_call(["protonvpn-cli", "-d"])
 
 	# Kill thread on Gtk destory
 	def killThread(self):
