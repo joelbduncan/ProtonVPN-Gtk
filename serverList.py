@@ -3,16 +3,28 @@
 '''
 To add more servers copy & paste the first line.
 The last item must end with ,]].
+
+Server name list format
+["Server Type", "Server Tier", "CLI Server Name", "Server Name in GUI"]
+
+Server Type
++------+----------+-----+-----+
+| Free | Standard | Tor | P2p |
++------+----------+-----+-----+
+|    0 |        2 |   3 |   4 |
++------+----------+-----+-----+
+
+
+Server Tier
++------+-------+------+-----------+
+| Free | Basic | Plus | Visionary |
++------+-------+------+-----------+
+|    1 |     2 |    3 |         4 |
++------+-------+------+-----------+
+
 '''
 
 # List of protonvpn servers
-# Will not breaking into categories maybe with a 3rd column with login level 1-3
-
-# 1 standard
-# 2 Secore Core
-# 3 TOR
-# 4 P2P
-
 serverList = [
 ["1", "2", "AU#1", "AU#1"],
 ["1", "2", "AU#2", "AU#2"],
