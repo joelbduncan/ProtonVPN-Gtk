@@ -8,12 +8,13 @@ Server name list format
 ["Server Type", "Server Tier", "CLI Server Name", "Server Name in GUI"]
 
 Server Type
-+------+----------+-----+-----+
-| Free | Standard | Tor | P2p |
-+------+----------+-----+-----+
-|    0 |        1 |   3 |   4 |
-+------+----------+-----+-----+
++------+----------+-------------+-----+-----+
+| Free | Standard | Secure Core | Tor | P2P |
++------+----------+-------------+-----+-----+
+| 0    | 1        | 2           | 3   | 4   |
++------+----------+-------------+-----+-----+
 
+* Free Servers currently not used listed for future use *
 
 Server Tier
 +------+-------+------+-----------+
