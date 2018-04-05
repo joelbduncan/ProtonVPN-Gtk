@@ -280,6 +280,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="halign">center</property>
+                <property name="margin_left">10</property>
                 <property name="hexpand">True</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
@@ -336,6 +337,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="halign">center</property>
+                <property name="margin_right">10</property>
                 <property name="hexpand">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">radioBtnStandard</property>
