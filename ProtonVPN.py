@@ -140,12 +140,11 @@ class Handler():
 
 	# Populate browserServer based on Toggle switch selected
 	def radioBtnSelection(self, radioSelected):
-		print 'working', radioSelected
 		global protonVPNTier
 		self.browseServer.remove_all()
 		for index in range(len(serverList)-1, 0, -1):
 			if str(radioSelected) in serverList[index][0]:
-				print "Function Started"
+				
 				# Free users protonTier = 1
 				if "0" in protonVPNTier:
 					if serverList[index][1] == "1":
@@ -168,28 +167,24 @@ class Handler():
 	def standardRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnStandard.get_active() == True:
-			print "Standard"
 			self.radioBtnSelection(radioSelected=1)
 
 	# Populate browseServer with Secure Core servers
 	def secureCoreRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnSecureCore.get_active() == True:
-			print "Secure Core"
 			self.radioBtnSelection(radioSelected=2)
 
 	# Populate browseServer with Tor servers
 	def torRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnTor.get_active() == True:
-			print "Tor"
 			self.radioBtnSelection(radioSelected=3)
 
 	# Populate browseServer with P2P servers
 	def p2pRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnP2P.get_active() == True:
-			print "P2P"
 			self.radioBtnSelection(radioSelected=4)
 
 	# Connect to selected server
