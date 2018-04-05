@@ -16,6 +16,11 @@ remoteServer = "10.8.8.1"
 # Checks for root execution
 if not os.geteuid() == 0:
 	sys.exit("Root access is required to use ProtonVPN-Gtk...")
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> be78a3e003582369514fbae8010e4d4543939560
 
 missingDependencies = False
 modulesRequired = ""
@@ -64,11 +69,17 @@ class Handler():
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
 		self.connectionProgress = builder.get_object('connectionProgress')
 
+<<<<<<< HEAD
 		# Server selection radio Button group
 		self.radioBtnStandard = builder.get_object('radioBtnStandard')
 		self.radioBtnSecureCore = builder.get_object('radioBtnSecureCore')
 		self.radioBtnTor = builder.get_object('radioBtnTor')
 		self.radioBtnP2P = builder.get_object('radioBtnP2P')
+=======
+		self.radioBtnStandard = builder.get_object('radioBtnStandard')
+		self.radioBtnSecureCore = builder.get_object('radioBtnSecureCore')
+		self.radioBtnTor = builder.get_object('radioBtnTor')
+>>>>>>> be78a3e003582369514fbae8010e4d4543939560
 
 		builder.connect_signals(self)
 
@@ -136,6 +147,7 @@ class Handler():
 		GObject.idle_add(self.locationLabel.set_text, str(countryName))
 		GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
 
+<<<<<<< HEAD
 	# Populate browserServer based on Toggle switch selected
 	def radioBtnSelection(self, radioSelected):
 		global protonVPNTier
@@ -184,6 +196,76 @@ class Handler():
 		global protonVPNTier
 		if self.radioBtnP2P.get_active() == True:
 			self.radioBtnSelection(radioSelected=4)
+=======
+	def standardRadioBtnToggle(self, widget):
+		global protonVPNTier
+		if self.radioBtnStandard.get_active() == True:
+			print "Standard Active"
+			self.browseServer.remove_all()
+			for index in range(len(serverList)-1, 0, -1):
+				if not ("TOR" in serverList[index][1] or "-" in serverList[index][1]):
+					# Free users protonTier = 1
+					if "0" in protonVPNTier:
+						if serverList[index][0] == "1":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+
+					# Basic users protonTier = 2
+					if "1" in protonVPNTier:
+						if serverList[index][0] == "1" or serverList[index][0] == "2":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+
+					# Plus & Visionary users protonTier = 3
+					if "2" in protonVPNTier or "3" in protonVPNTier:
+						if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+		self.browseServer.set_active(0)
+
+	def secureCoreRadioBtnToggle(self, widget):
+		global protonVPNTier
+		if self.radioBtnSecureCore.get_active() == True:
+			print "Secure Core"
+			self.browseServer.remove_all()
+			for index in range(len(serverList)-1, 0, -1):
+				if "-" in serverList[index][1]:
+					# Free users protonTier = 1
+					if "0" in protonVPNTier:
+						if serverList[index][0] == "1":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+
+					# Basic users protonTier = 2
+					if "1" in protonVPNTier:
+						if serverList[index][0] == "1" or serverList[index][0] == "2":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+
+					# Plus & Visionary users protonTier = 3
+					if "2" in protonVPNTier or "3" in protonVPNTier:
+						if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+			self.browseServer.set_active(0)
+
+	def torRadioBtnToggle(self, widget):
+		global protonVPNTier
+		if self.radioBtnTor.get_active() == True:
+			print "Tor Active"
+			self.browseServer.remove_all()
+			for index in range(len(serverList)-1, 0, -1):
+				if "TOR" in serverList[index][1]:
+					# Free users protonTier = 1
+					if "0" in protonVPNTier:
+						if serverList[index][0] == "1":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+
+					# Basic users protonTier = 2
+					if "1" in protonVPNTier:
+						if serverList[index][0] == "1" or serverList[index][0] == "2":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+
+					# Plus & Visionary users protonTier = 3
+					if "2" in protonVPNTier or "3" in protonVPNTier:
+						if serverList[index][0] == "1" or serverList[index][0] == "2" or serverList[index][0] == "3":
+							self.browseServer.insert(0, serverList[index][1], serverList[index][2])
+		self.browseServer.set_active(0)
+>>>>>>> be78a3e003582369514fbae8010e4d4543939560
 
 	# Connect to selected server
 	def connectBtn(self, button):
