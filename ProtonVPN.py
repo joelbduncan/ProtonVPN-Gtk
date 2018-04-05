@@ -17,8 +17,6 @@ remoteServer = "10.8.8.1"
 if not os.geteuid() == 0:
 	sys.exit("Root access is required to use ProtonVPN-Gtk...")
 
-
-
 missingDependencies = False
 modulesRequired = ""
 
@@ -144,7 +142,7 @@ class Handler():
 		self.browseServer.remove_all()
 		for index in range(len(serverList)-1, 0, -1):
 			if str(radioSelected) in serverList[index][0]:
-				
+
 				# Free users protonTier = 1
 				if "0" in protonVPNTier:
 					if serverList[index][1] == "1":
