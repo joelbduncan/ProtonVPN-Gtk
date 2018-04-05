@@ -66,6 +66,7 @@ class Handler():
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
 		self.connectionProgress = builder.get_object('connectionProgress')
 
+		# Server selection radio Button group
 		self.radioBtnStandard = builder.get_object('radioBtnStandard')
 		self.radioBtnSecureCore = builder.get_object('radioBtnSecureCore')
 		self.radioBtnTor = builder.get_object('radioBtnTor')
@@ -80,21 +81,7 @@ class Handler():
 			protonVPNTier = f.read()
 
 		# Populate Server list
-		for index in range(len(serverList)-1, 0, -1):
-			# Free users protonTier = 1
-			if "0" in protonVPNTier:
-				if serverList[index][0] == "1":
-					self.browseServer.insert(0, serverList[index][2], serverList[index][3])
-
-			# Basic users protonTier = 2
-			if "1" in protonVPNTier:
-				if serverList[index][1] == "1" or serverList[index][1] == "2":
-					self.browseServer.insert(0, serverList[index][2], serverList[index][3])
-
-			# Plus & Visionary users protonTier = 3
-			if "2" in protonVPNTier or "3" in protonVPNTier:
-				if serverList[index][1] == "1" or serverList[index][1] == "2" or serverList[index][1] == "3":
-					self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+		self.radioBtnSelection(radioSelected=1)
 
 		# Populate potocol selection
 		self.protocolSelection.insert(0, "tcp", "TCP")
@@ -151,6 +138,7 @@ class Handler():
 		GObject.idle_add(self.locationLabel.set_text, str(countryName))
 		GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
 
+	# Populate browserServer based on Toggle switch selected
 	def radioBtnSelection(self, radioSelected):
 		print 'working', radioSelected
 		global protonVPNTier
@@ -172,28 +160,32 @@ class Handler():
 				if "2" in protonVPNTier or "3" in protonVPNTier:
 					if serverList[index][1] == "1" or serverList[index][1] == "2" or serverList[index][1] == "3":
 						self.browseServer.insert(0, serverList[index][2], serverList[index][3])
+
+		# Set item one in browseServer as active
 		self.browseServer.set_active(0)
 
+	# Populate browseServer with standard servers
 	def standardRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnStandard.get_active() == True:
 			print "Standard"
 			self.radioBtnSelection(radioSelected=1)
 
+	# Populate browseServer with Secure Core servers
 	def secureCoreRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnSecureCore.get_active() == True:
 			print "Secure Core"
 			self.radioBtnSelection(radioSelected=2)
 
-
+	# Populate browseServer with Tor servers
 	def torRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnTor.get_active() == True:
 			print "Tor"
 			self.radioBtnSelection(radioSelected=3)
 
-
+	# Populate browseServer with P2P servers
 	def p2pRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnP2P.get_active() == True:
