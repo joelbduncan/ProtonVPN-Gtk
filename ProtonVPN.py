@@ -169,6 +169,12 @@ class Handler():
 		except:
 			print 'Network connection failed'
 
+	def connectionTimeout(self):
+		print "Connection Timeout"
+		time.sleep(30)
+		self.connectionProgress.stop()
+		pass
+
 	# Populate browserServer based on Toggle switch selected
 	def radioBtnSelection(self, radioSelected):
 		global protonVPNTier
@@ -235,10 +241,13 @@ class Handler():
 		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
+		t1 = Thread(target=self.connectionTimeout)
+		t1.start()
 
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
 		subprocess.Popen(["protonvpn-cli", "-d"])
+		self.connectionProgress.stop()
 
 	# Update protonvpn-cli
 	def updateBtn(self, button):
