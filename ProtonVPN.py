@@ -101,7 +101,7 @@ class Handler():
 		self.browseServer.set_active_id(parser.get('globalVars', 'lastConnection'))
 		self.protocolSelection.set_active_id(parser.get('globalVars', 'protocol'))
 
-		# Start thread for scheduler
+		# Start thread for connectionStatus
 		self.thread = Thread(target=self.connectionStatus)
 		self.thread.daemon = True
 		self.thread.start()
