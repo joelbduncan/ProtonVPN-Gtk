@@ -133,7 +133,7 @@ class Handler():
 		global currentConnectionStatus
 		while True:
 			try:
-				time.sleep(1)
+				time.sleep(2)
 
 				self.fetchIP()
 				
@@ -157,11 +157,11 @@ class Handler():
 	# Get current IP address/Location
 	def fetchIP(self):
 		try:
-			send_url = 'http://freegeoip.net/json'
+			send_url = 'https://geoip-db.com/json'
 			r = requests.get(send_url)
 			j = json.loads(r.text)
 			countryName = j['country_name']
-			ipAddress = j['ip']
+			ipAddress = j['IPv4']
 
 			# Update Location & IP Address labels on Gtk window
 			GObject.idle_add(self.locationLabel.set_text, str(countryName))
