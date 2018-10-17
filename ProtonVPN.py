@@ -83,8 +83,8 @@ class Handler():
 		protonVPNData = json.loads(protonServerReq.text)
 
 		# Open/Read/Close ProtonVPN Tier config file
-		#with open(os.environ['HOME'] + '/.protonvpn-cli/protonvpn_tier','r') as f:
-		with open('/home/joel/.protonvpn-cli/protonvpn_tier','r') as f:
+		currentUser =  os.environ['SUDO_USER']
+		with open("/home/" + currentUser + "/.protonvpn-cli/protonvpn_tier",'r') as f:
 			protonVPNTier = f.read()
 
 		# Populate Server list
