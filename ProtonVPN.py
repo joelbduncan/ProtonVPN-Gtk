@@ -76,18 +76,19 @@ class Handler():
 		global protonVPNData
 
 		# Load ProtonVPN server details into variable
-		protonServerReq = requests.get("https://api.protonmail.ch/vpn/servers")
+		protonServerReq = requests.get("https://api.protonmail.ch/vpn/logicals")
 		protonServerReq.text
 
 		# Convert it to a Python dictionary
 		protonVPNData = json.loads(protonServerReq.text)
 
 		# Open/Read/Close ProtonVPN Tier config file
-		with open(os.environ['HOME'] + '/.protonvpn-cli/protonvpn_tier','r') as f:
+		#with open(os.environ['HOME'] + '/.protonvpn-cli/protonvpn_tier','r') as f:
+		with open('/home/joel/.protonvpn-cli/protonvpn_tier','r') as f:
 			protonVPNTier = f.read()
 
 		# Populate Server list
-		self.radioBtnSelection(radioSelected="False")
+		self.radioBtnSelection(radioSelected="0")
 
 		# Populate potocol selection
 		self.protocolSelection.insert(0, "tcp", "TCP")
@@ -185,8 +186,8 @@ class Handler():
 		# Temp used to display load (Future feature)
 		self.progressbar = Gtk.ProgressBar()
 
-		for item in protonVPNData['Servers']:
-			if str(radioSelected) in (item['Keywords']):
+		for item in protonVPNData['LogicalServers']:
+			if str(radioSelected) in str(item['Features']):
 				# Loop through the result. 
 				if "0" in protonVPNTier:
 					if "0" in str((item['Tier'])):
@@ -200,7 +201,7 @@ class Handler():
 					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2" or str((item['Tier'])) == "3":
 						self.browseServer.insert(0, (item['Name']), (item['Domain']))
 
-			if str(radioSelected) in str((item['Features']['SecureCore'])):
+			if str(radioSelected) in str(item['Features']):
 				if "1" in protonVPNTier:
 					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2":
 						self.browseServer.insert(0, (item['Name']), (item['Domain']))
@@ -216,25 +217,25 @@ class Handler():
 	def standardRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnStandard.get_active() == True:
-			self.radioBtnSelection(radioSelected="False")
+			self.radioBtnSelection(radioSelected="0")
 
 	# Populate browseServer with Secure Core servers
 	def secureCoreRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnSecureCore.get_active() == True:
-			self.radioBtnSelection(radioSelected="True")
+			self.radioBtnSelection(radioSelected="1")
 
 	# Populate browseServer with Tor servers
 	def torRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnTor.get_active() == True:
-			self.radioBtnSelection(radioSelected="tor")
+			self.radioBtnSelection(radioSelected="2")
 
 	# Populate browseServer with P2P servers
 	def p2pRadioBtnToggle(self, widget):
 		global protonVPNTier
 		if self.radioBtnP2P.get_active() == True:
-			self.radioBtnSelection(radioSelected="p2p")
+			self.radioBtnSelection(radioSelected="4")
 
 	# Connect to selected server
 	def connectBtn(self, button):
