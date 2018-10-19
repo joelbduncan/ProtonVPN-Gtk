@@ -9,6 +9,10 @@ from ConfigParser import SafeConfigParser
 import os
 import sys
 
+
+from time import sleep
+from subprocess import Popen, PIPE
+
 # OpenVPN Gateway IP Address for connection status
 remoteServer = "10.8.8.1"
 
@@ -102,37 +106,19 @@ class Handler():
 		self.browseServer.set_active_id(parser.get('globalVars', 'lastConnection'))
 		self.protocolSelection.set_active_id(parser.get('globalVars', 'protocol'))
 
+		global currentConnectionStatus
+		currentConnectionStatus = False
+
 		# Start thread for connectionStatus
 		self.thread = Thread(target=self.connectionStatus)
 		self.thread.daemon = True
 		self.thread.start()
 
-		time.sleep(1)
-
-		self.fetchIP()
-
-		global currentConnectionStatus
-		currentConnectionStatus = False
-		
-		send_url = 'http://dl.slethen.io/api.php'
-		r = requests.get(send_url)
-		j = json.loads(r.text)
-
-		if str(j) != currentConnectionStatus:
-			currentConnectionStatus = str(j)
-
-			if "True" in str(j):
-				print 'True'
-				GObject.idle_add(self.statusLabel.set_text, str("Connected"))
-				self.connectionProgress.stop()
-			if "False" in str(j):
-				print 'False'
-				GObject.idle_add(self.statusLabel.set_text, str("Disconnected"))
-
 	# Check VPN connection status & upadte location infomation
 	def connectionStatus(self):
 		global currentConnectionStatus
 		while True:
+			print "Updating"
 			try:
 				time.sleep(2)
 
@@ -152,23 +138,21 @@ class Handler():
 					if "False" in str(j):
 						print 'False'
 						GObject.idle_add(self.statusLabel.set_text, str("Disconnected"))
-			except:
-				print 'Network connection failed'
+
+			except Exception as e: print(e), "Error in currentConnectionStatus"
 
 	# Get current IP address/Location
 	def fetchIP(self):
 		try:
-			send_url = 'https://geoip-db.com/json'
+			send_url = 'https://api.protonmail.ch/vpn/location'
 			r = requests.get(send_url)
 			j = json.loads(r.text)
-			countryName = j['country_name']
-			ipAddress = j['IPv4']
-
-			# Update Location & IP Address labels on Gtk window
+			countryName = j['Country']
+			ipAddress = j['IP']			# Update Location & IP Address labels on Gtk window
 			GObject.idle_add(self.locationLabel.set_text, str(countryName))
 			GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
-		except:
-			print 'Network connection failed'
+
+		except Exception as e: print(e), "Error in fetchIP"
 
 	def connectionTimeout(self):
 		print "Connection Timeout"
@@ -242,13 +226,24 @@ class Handler():
 		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
-		t1 = Thread(target=self.connectionTimeout)
-		t1.start()
+		#t1 = Thread(target=self.connectionTimeout)
+		#t1.start()
+
+	def disconnectFunc(self):
+		global disconnectThread
+		GObject.idle_add(self.statusLabel.set_text, str("Disconnecting..."))
+		p = subprocess.Popen(['protonvpn-cli', '-d'], stdout=subprocess.PIPE, shell=False)
+		time.sleep(5)
+		p.kill()
+		self.connectionProgress.stop()
+		self.disconnectThread.should_abort_immediately = True
 
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
-		subprocess.Popen(["protonvpn-cli", "-d"])
-		self.connectionProgress.stop()
+		global disconnectThread
+		self.disconnectThread = Thread(target=self.disconnectFunc)
+		self.disconnectThread.daemon = True
+		self.disconnectThread.start()
 
 	# Update protonvpn-cli
 	def updateBtn(self, button):
@@ -273,7 +268,7 @@ class Handler():
 
 	# Kill thread on Gtk destory
 	def killThread(self):
-		self.thread.join(0.1)
+		self.thread.should_abort_immediately = True
 
 # Runs when windows closed
 def destroy(destroy):
