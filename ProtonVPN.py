@@ -172,27 +172,38 @@ class Handler():
 
 		for item in protonVPNData['LogicalServers']:
 			if str(radioSelected) in str(item['Features']):
-				# Loop through the result. 
+
+				# Loop through the result.
+				# Free users protonTier = 1
 				if "0" in protonVPNTier:
 					if "0" in str((item['Tier'])):
 						self.browseServer.insert(0, (item['Name']), (item['Domain']))
 
+				# Basic users protonTier = 2
 				if "1" in protonVPNTier:
 					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2":
 						self.browseServer.insert(0, (item['Name']), (item['Domain']))
 
+				# Plus & Visionary users protonTier = 3
 				if "2" in protonVPNTier:
 					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2" or str((item['Tier'])) == "3":
 						self.browseServer.insert(0, (item['Name']), (item['Domain']))
 
-			if str(radioSelected) in str(item['Features']):
-				if "1" in protonVPNTier:
-					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2":
-						self.browseServer.insert(0, (item['Name']), (item['Domain']))
-
-				if "2" in protonVPNTier:
-					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2" or str((item['Tier'])) == "3":
-						self.browseServer.insert(0, (item['Name']), (item['Domain']))
+# I have no idea what this code does?
+# This causes the VPN selection list to have duplicate entrys
+# Removed for now.
+#
+#
+#			if str(radioSelected) in str(item['Features']):
+#				if "1" in protonVPNTier:
+#					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2":
+#						self.browseServer.insert(0, (item['Name']), (item['Domain']))
+#						print item['Name'], (item['Domain'])
+#
+#				if "2" in protonVPNTier:
+#					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2" or str((item['Tier'])) == "3":
+#						self.browseServer.insert(0, (item['Name']), (item['Domain']))
+#						print item['Name'], (item['Domain'])
 
 		# Set item one in browseServer as active
 		self.browseServer.set_active(0)
