@@ -276,6 +276,7 @@ class Handler():
 
 	# Allows connection to a server when a connection is already established
 	def reconnect(self):
+		self.disconnectBtn(self)
 		if(self.statusLabel.get_text() == "Connected"):
 			subprocess.check_call(["protonvpn-cli", "-d"])
 
