@@ -234,6 +234,7 @@ class Handler():
 
 	# Connect to selected server
 	def connectBtn(self, button):
+		GObject.idle_add(self.statusLabel.set_text, str("Connecting..."))
 		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
