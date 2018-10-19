@@ -247,10 +247,12 @@ class Handler():
 		time.sleep(5)
 		p.kill()
 		self.connectionProgress.stop()
+		self.connectionStatus()
 		self.disconnectThread.should_abort_immediately = True
 
 	# Disconnect from VPN
 	def disconnectBtn(self, button):
+		self.connectionProgress.start()
 		global disconnectThread
 		self.disconnectThread = Thread(target=self.disconnectFunc)
 		self.disconnectThread.daemon = True
