@@ -170,7 +170,7 @@ class Handler():
 		# Temp used to display load (Future feature)
 		self.progressbar = Gtk.ProgressBar()
 
-		for item in protonVPNData['LogicalServers']:
+		for item in protonVPNData['LogicalServers'][::-1]:
 			if str(radioSelected) in str(item['Features']):
 
 				# Loop through the result.
