@@ -181,7 +181,7 @@ class Handler():
 
 				# Basic users protonTier = 2
 				if "1" in protonVPNTier:
-					if str((item['Tier'])) == "1" or str((item['Tier'])) == "2":
+					if str((item['Tier'])) == "1":
 						self.browseServer.insert(0, (item['Name']), (item['Domain']))
 
 				# Plus & Visionary users protonTier = 3
