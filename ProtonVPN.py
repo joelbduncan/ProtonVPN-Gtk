@@ -139,7 +139,12 @@ class Handler():
 						print 'False'
 						GObject.idle_add(self.statusLabel.set_text, str("Disconnected"))
 
-			except Exception as e: print(e), "Error in currentConnectionStatus"
+			except Exception as e:
+				wait = retries * 1;
+				print 'Error! Waiting %s secs and re-trying...' % wait
+				sys.stdout.flush()
+				time.sleep(wait)
+				retries += 1
 
 	# Get current IP address/Location
 	def fetchIP(self):
