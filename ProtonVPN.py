@@ -227,8 +227,6 @@ class Handler():
 		self.reconnect()
 		self.connectionProgress.start()
 		subprocess.Popen(["protonvpn-cli", "-c", str(self.browseServer.get_active_id()), str(self.protocolSelection.get_active_id())])
-		#t1 = Thread(target=self.connectionTimeout)
-		#t1.start()
 
 	def disconnectFunc(self):
 		global disconnectThread
