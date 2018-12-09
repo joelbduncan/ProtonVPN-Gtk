@@ -117,6 +117,7 @@ class Handler():
 	# Check VPN connection status & upadte location infomation
 	def connectionStatus(self):
 		global currentConnectionStatus
+		retries = 1
 		while True:
 			print "Updating"
 			try:
