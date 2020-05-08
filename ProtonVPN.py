@@ -1,63 +1,60 @@
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import GObject, Gtk
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Python 3.x port of ProtonVPN-Gtk
+# 
+# as of May-2020 going in blind. 
+
+import os, pwd, sys, time, socket
+try:
+	import gi
+	gi.require_version('Gtk', '3.0')
+	from gi.repository import GObject, Gtk
+
+	if int(sys.version_info[0]) < 3:
+		print("This version of ProtonVPN-Gtk is designed to run on Python 3.x, your milage may vary!")
+
+except ImportError:
+	sys.exit("Failed to import ''gi'' are you running on a Gtk(3.x) environment?")
+	
 import subprocess
 from threading import Thread
-import socket
-import time
-from ConfigParser import SafeConfigParser
-import os
-import sys
-
+import json
+from configparser import SafeConfigParser
 
 from time import sleep
 from subprocess import Popen, PIPE
 
-# OpenVPN Gateway IP Address for connection status
-remoteServer = "10.8.8.1"
-
-# Checks for root execution
-if not os.geteuid() == 0:
-	sys.exit("Root access is required to use ProtonVPN-Gtk...")
-
-missingDependencies = False
-modulesRequired = ""
-
 # Checks that protonvpn-cli is installed
 try:
-	subprocess.check_output(['which', 'protonvpn-cli'])
-except subprocess.CalledProcessError, e:
-	modulesRequired += "protonvpn-cli needs to be installed.\n"
-	missingDependencies = True
+	subprocess.check_output(['which', 'protonvpn'])
+except subprocess.CalledProcessError as e:
+	sys.exit("''protonvpn-cli'' must be installed!")
 
-# Checks for the python-schedule module
-try:
-	import schedule
-except ImportError:
-	missingDependencies = True
-	modulesRequired += "python-schedule needs to be installed.\n"
-
-# Checks for the python-requests module
 try:
 	import requests
 except ImportError:
-	missingDependencies = True
-	modulesRequired += "python-requests needs to be installed.\n"
+	sys.exit("''requests'' must be installed!")
 
-# Checks for the python-json module
-try:
-	import json
-except ImportError:
-	missingDependencies = True
-	modulesRequired += "python-json needs to be installed.\n"
+#Consider moving this to an INI or other file in the future.
+_proton = {
+	"remote_server": "10.8.8.1", # Gateway status
+	"server_list": "https://api.protonmail.ch/vpn/logicals",
+	"location": "https://api.protonmail.ch/vpn/location",
+	"ip_check_pri": "http://dl.slethen.io/api.php", # after connect
+	"ip_check_sec": "https://api.ipify.org/?format=json", #before connect, after connect
+	"ip_check_fb": "" #Fallback not the cancer
+}
+#print([os.getuid(), pwd.getpwuid(os.getuid()["pw_name"])])
+# Initial Root check:
+if os.getuid() > 1 :
+	print("Run as 'sudo' or 'root'!")
+	sys.exit(0)
 
-# Exits ProtonVPN.py execution with missing dependencies
-if(missingDependencies):
-	sys.exit(modulesRequired)
-
+protonVPNTier = "0"
+protonVPNData = ""
 # Setup GUI Handlers
 class Handler():
-
 	def __init__(self):
 		# Connect GUI components
 		self.browseServer = builder.get_object('browseServer')
@@ -67,7 +64,6 @@ class Handler():
 		self.ipAddressLabel = builder.get_object('ipAddressLabel')
 		self.connectionProgress = builder.get_object('connectionProgress')
 		self.progressBar = builder.get_object('progressBar')
-
 		# Server selection radio Button group
 		self.radioBtnStandard = builder.get_object('radioBtnStandard')
 		self.radioBtnSecureCore = builder.get_object('radioBtnSecureCore')
@@ -80,16 +76,22 @@ class Handler():
 		global protonVPNData
 
 		# Load ProtonVPN server details into variable
-		protonServerReq = requests.get("https://api.protonmail.ch/vpn/logicals")
+		protonServerReq = requests.get(_proton["server_list"])
 		protonServerReq.text
 
 		# Convert it to a Python dictionary
 		protonVPNData = json.loads(protonServerReq.text)
 
 		# Open/Read/Close ProtonVPN Tier config file
-		currentUser =  os.environ['SUDO_USER']
-		with open("/home/" + currentUser + "/.protonvpn-cli/protonvpn_tier",'r') as f:
-			protonVPNTier = f.read()
+		# both whoami as root and sudo report root. so we can safely assume they're root.
+		
+		#currentUser =  os.environ['SUDO_USER']
+		# needs some research into this...
+		try:
+			with open("/root/.protonvpn-cli/protonvpn_tier",'r') as f:
+				protonVPNTier = f.read()
+		except:
+			print("You must first configure your client and details using: \"protonvpn init\"")
 
 		# Populate Server list
 		self.radioBtnSelection(radioSelected="0")
@@ -119,30 +121,26 @@ class Handler():
 		global currentConnectionStatus
 		retries = 1
 		while True:
-			print "Updating"
+			print("Updating")
 			try:
-				time.sleep(2)
-
+				#remove in future....
 				self.fetchIP()
-				
-				send_url = 'http://dl.slethen.io/api.php'
-				r = requests.get(send_url)
+				r = requests.get(_proton["ip_check_pri"], timeout=5)
 				j = json.loads(r.text)
 
 				if str(j) != currentConnectionStatus:
 					currentConnectionStatus = str(j)
-
 					if "True" in str(j):
-						print 'True'
+						print("True")
 						GObject.idle_add(self.statusLabel.set_text, str("Connected"))
 						self.connectionProgress.stop()
 					if "False" in str(j):
-						print 'False'
+						print("False")
 						GObject.idle_add(self.statusLabel.set_text, str("Disconnected"))
 
 			except Exception as e:
 				wait = retries * 1;
-				print 'Error! Waiting %s secs and re-trying...' % wait
+				print("Error! Waiting {} seconds and re-trying...".format(wait))
 				sys.stdout.flush()
 				time.sleep(wait)
 				retries += 1
@@ -150,19 +148,20 @@ class Handler():
 	# Get current IP address/Location
 	def fetchIP(self):
 		try:
-			send_url = 'https://api.protonmail.ch/vpn/location'
-			r = requests.get(send_url)
+			r = requests.get(_proton["location"], timeout=15)
 			j = json.loads(r.text)
 			countryName = j['Country']
 			ipAddress = j['IP']			# Update Location & IP Address labels on Gtk window
 			GObject.idle_add(self.locationLabel.set_text, str(countryName))
 			GObject.idle_add(self.ipAddressLabel.set_text, str(ipAddress))
 
-		except Exception as e: print(e), "Error in fetchIP"
+		except Exception as e: 
+			print("Failed to fetch IP")
+			print(e)
 
 	def connectionTimeout(self):
-		print "Connection Timeout"
-		time.sleep(30)
+		print("Connection Timeout")
+		time.sleep(30) # keep for now
 		self.connectionProgress.stop()
 		pass
 
@@ -280,7 +279,12 @@ def destroy(destroy):
 
 # Connect glade GUI
 builder = Gtk.Builder()
-builder.add_from_file("proton-ui.glade")
+try:
+	builder.add_from_file("proton-ui.glade")
+except Exception as errNoFile:
+	print(errNoFile)
+	builder.add_from_file("proton-ui.glade")
+	
 builder.connect_signals(Handler())
 
 # Draw window
@@ -290,3 +294,4 @@ window.show_all()
 window.connect("destroy", destroy)
 
 Gtk.main()
+
